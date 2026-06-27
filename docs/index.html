@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGKeyer - TCI to Keyer Converter</title>
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-dim: #95a5a6;
+            --primary: #2ecc71;
+            --primary-hover: #27ae60;
+            --border: #333333;
+            --warning: #f39c12;
+            --wechat: #07C160;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 导航栏 */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .lang-switch {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-switch:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 首屏区块 */
+        .hero {
+            padding: 150px 20px 80px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #2ecc71, #20c997);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 30px;
+        }
+
+        /* 特性卡片 */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 15px;
+        }
+
+        /* 注册与赞助区块 */
+        .action-section {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 80px 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .action-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .action-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .action-container p {
+            color: var(--text-dim);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #121212;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(46, 204, 113, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(46, 204, 113, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-paypal {
+            background-color: #0079C1;
+            color: #fff;
+        }
+
+        .btn-paypal:hover {
+            background-color: #005A93;
+            box-shadow: 0 4px 15px rgba(0, 121, 193, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* 赞助区块布局 */
+        .donate-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .wechat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--bg-main);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .wechat-box img {
+            width: 140px;
+            height: 140px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid var(--wechat);
+        }
+
+        .wechat-box span {
+            color: var(--wechat);
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-dim);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 15px 20px; }
+            .hero h1 { font-size: 36px; }
+            .features { padding: 20px; }
+            .donate-grid { flex-direction: column; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">CGKeyer</div>
+        <button class="lang-switch" onclick="toggleLanguage()" id="langBtn">EN / 中文</button>
+    </nav>
+
+    <div class="hero">
+        <h1 data-zh="专业级 TCI 电键转换器" data-en="Professional TCI CW Keyer">专业级 TCI 电键转换器</h1>
+        <p data-zh="为业余无线电爱好者打造。提供超低延迟的电码拍发与<strong>高保真本地侧音</strong>体验，完美适配 ExpertSDR 等支持 TCI 协议的现代电台。<br><br><span style='color: var(--warning); font-size: 15px;'>* 提示：未注册版本<strong>没有任何功能限制</strong>，仅会在运行约 5 分钟后自动断开连接。</span>" 
+           data-en="Built for Ham Radio operators. Experience ultra-low latency CW keying and <strong>high-fidelity local sidetone</strong>, perfectly adapted for modern transceivers supporting the TCI protocol.<br><br><span style='color: var(--warning); font-size: 15px;'>* Note: The unregistered version has <strong>absolutely no functional limitations</strong>, but will automatically disconnect after about 5 minutes.</span>">
+           为业余无线电爱好者打造。提供超低延迟的电码拍发与<strong>高保真本地侧音</strong>体验，完美适配 ExpertSDR 等支持 TCI 协议的现代电台。<br><br><span style='color: var(--warning); font-size: 15px;'>* 提示：未注册版本<strong>没有任何功能限制</strong>，仅会在运行约 5 分钟后自动断开连接。</span>
+        </p>
+
+        <div style="margin-top: 40px;">
+            <a href="CGKeyer_latest.zip" class="btn btn-primary">
+                <span data-zh="⬇️ 立即下载 (Windows)" data-en="⬇️ Download Now (Windows)">⬇️ 立即下载 (Windows)</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3 data-zh="超低延迟传输" data-en="Ultra-low Latency">超低延迟传输</h3>
+            <p data-zh="绕过虚拟串口，直接通过 WebSocket 与 TCI 核心通信，实现毫秒级的发射响应。" 
+               data-en="Bypass virtual serial ports. Communicate directly with the TCI core via WebSocket for millisecond TX response.">
+               绕过虚拟串口，直接通过 WebSocket 与 TCI 核心通信，实现毫秒级的发射响应。
+            </p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🎛️</div>
+            <h3 data-zh="独家多模式支持" data-en="Exclusive Keying Modes">独家多模式支持</h3>
+            <p data-zh="不仅支持 Iambic A/B 和手键，更创新加入了防粘连的 Iambic Y 模式与经典的半自动(Bug)模式。" 
+               data-en="Supports Iambic A/B and Straight Key, plus the innovative anti-stick Iambic Y mode and classic Bug (Semi-auto) mode.">
+               不仅支持 Iambic A/B 和手键，更创新加入了防粘连的 Iambic Y 模式与经典的半自动(Bug)模式。
+            </p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🎧</div>
+            <h3 data-zh="高保真本地侧音" data-en="High-Fidelity Sidetone">高保真本地侧音</h3>
+            <p data-zh="内置低延迟高保真音频引擎，提供纯净的监听体验，侧音频率与音量均可平滑调节。" 
+               data-en="Built-in low-latency high-fidelity audio engine for a pure monitoring experience, with seamlessly adjustable sidetone frequency and volume.">
+               内置低延迟高保真音频引擎，提供纯净的监听体验，侧音频率与音量均可平滑调节。
+            </p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🤖</div>
+            <h3 data-zh="智能宏与解码" data-en="Smart Macros & Decoder">智能宏与解码</h3>
+            <p data-zh="内置 12 组可自定义快捷宏指令，配合高精度的实时 CW 屏幕解码器，让通联更加轻松高效。" 
+               data-en="12 customizable macro keys and a high-precision real-time CW decoder make your QSOs easier and more efficient.">
+               内置 12 组可自定义快捷宏指令，配合高精度的实时 CW 屏幕解码器，让通联更加轻松高效。
+            </p>
+        </div>
+    </div>
+
+    <div class="action-section">
+        <div class="action-container">
+            <h2 data-zh="获取软件授权" data-en="Get Software License">获取软件授权</h2>
+            <p data-zh="CGKeyer 采用呼号绑定注册机制，获取注册码是<strong style='color: var(--primary);'>完全免费</strong>的！<br>请发送邮件并<strong>提供您的呼号 (Callsign)</strong> 以索取专属授权码。" 
+               data-en="CGKeyer uses callsign-bound registration, and the registration code is <strong style='color: var(--primary);'>completely FREE</strong>!<br>Please send an email <strong>providing your Callsign</strong> to request your exclusive license.">
+               CGKeyer 采用呼号绑定注册机制，获取注册码是<strong style='color: var(--primary);'>完全免费</strong>的！<br>请发送邮件并<strong>提供您的呼号 (Callsign)</strong> 以索取专属授权码。
+            </p>
+            
+            <a href="mailto:bd4mcg@gmail.com?subject=Request CGKeyer Registration Code" class="btn btn-outline" id="btn-email">
+                <span data-zh="✉️ 邮件申请注册码" data-en="✉️ Request RegCode via Email">✉️ 邮件申请注册码</span>
+            </a>
+
+            <div style="margin-top: 60px; border-top: 1px solid var(--border); padding-top: 40px;">
+                <h2 data-zh="支持开发" data-en="Support Development">支持开发</h2>
+                <p data-zh="如果您觉得这个软件对您的通联有帮助，欢迎请作者喝杯咖啡 ☕" 
+                   data-en="If you find this software helpful for your QSOs, consider buying the author a coffee ☕">
+                   如果您觉得这个软件对您的通联有帮助，欢迎请作者喝杯咖啡 ☕
+                </p>
+                
+                <div class="donate-grid">
+                    <div>
+                        <a href="https://www.paypal.com/ncp/payment/73BCPVNSMXMGG" target="_blank" class="btn btn-paypal">
+                            <span data-zh="💳 PayPal 赞助" data-en="💳 Donate via PayPal">💳 PayPal 赞助</span>
+                        </a>
+                    </div>
+                    
+                    <div class="wechat-box">
+                        <img src="wechat.png" alt="WeChat Pay">
+                        <span data-zh="微信扫码赞助" data-en="WeChat Pay">微信扫码赞助</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 BD4MCG. All rights reserved.
+    </footer>
+
+    <script>
+        let currentLang = 'zh';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            
+            const langBtn = document.getElementById('langBtn');
+            langBtn.innerText = currentLang === 'zh' ? 'EN / 中文' : '中文 / EN';
+
+            const elements = document.querySelectorAll('[data-zh]');
+            elements.forEach(el => {
+                el.innerHTML = el.getAttribute(`data-${currentLang}`);
+            });
+        }
+    </script>
+</body>
+</html>
