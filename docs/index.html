@@ -94,7 +94,7 @@
 
         /* 首屏区块 */
         .hero {
-            padding: 150px 20px 80px;
+            padding: 150px 20px 40px;
             text-align: center;
             max-width: 800px;
             margin: 0 auto;
@@ -112,6 +112,32 @@
             font-size: 18px;
             color: var(--text-dim);
             margin-bottom: 30px;
+        }
+
+        /* 截图展示区域 */
+        .screenshot-container {
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .screenshot-wrapper {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .screenshot-wrapper img {
+            width: 100%;
+            height: auto;
+            max-width: 900px;
+            border-radius: 6px;
+            display: block;
         }
 
         /* 特性卡片 */
@@ -273,6 +299,7 @@
             .hero h1 { font-size: 36px; }
             .features { padding: 20px; }
             .donate-grid { flex-direction: column; gap: 30px; }
+            .screenshot-container { margin-bottom: 40px; }
         }
     </style>
 </head>
@@ -299,6 +326,12 @@
             <a href="CGKeyer_lastest.zip" class="btn btn-primary" target="_blank">
                 <span data-zh="⬇️ 立即下载 (Windows)" data-en="⬇️ Download Now (Windows)">⬇️ 立即下载 (Windows)</span>
             </a>
+        </div>
+    </div>
+
+    <div class="screenshot-container">
+        <div class="screenshot-wrapper">
+            <img src="screenshot.png" alt="CGKeyer 软件主界面" data-zh="CGKeyer 软件主界面" data-en="CGKeyer Main Interface">
         </div>
     </div>
 
@@ -387,7 +420,12 @@
 
             const elements = document.querySelectorAll('[data-zh]');
             elements.forEach(el => {
-                el.innerHTML = el.getAttribute(`data-${currentLang}`);
+                // 如果是图片，同时切换 alt 属性
+                if (el.tagName === 'IMG') {
+                    el.setAttribute('alt', el.getAttribute(`data-${currentLang}`));
+                } else {
+                    el.innerHTML = el.getAttribute(`data-${currentLang}`);
+                }
             });
         }
     </script>
